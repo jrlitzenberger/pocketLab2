@@ -322,23 +322,23 @@ ARM Macro Assembler    Page 5
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0 --apcs=interw
 ork --depend=.\_build\arm_startup_nrf51.d -o.\_build\arm_startup_nrf51.o -IC:\U
-sers\John-Surface\Documents\nRF51_SDK\examples\ble_peripheral\ble_app_smartModu
+sers\John-Surface\Documents\nRF51_pocketLab2\examples\ble_peripheral\ble_app_po
 
 
 
 ARM Macro Assembler    Page 6 
 
 
-le\pca10028\s130\arm5_no_packs\RTE -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\
-Include -IC:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\De
-vice\Include -IC:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.6
-.0\Device\Include --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" -
--predefine="__UVISION_VERSION SETA 518" --predefine="_RTE_ SETA 1" --predefine=
-"NRF51 SETA 1" --predefine="BLE_STACK_SUPPORT_REQD SETA 1" --predefine="BOARD_P
-CA10028 SETA 1" --predefine="S130 SETA 1" --predefine="NRF_LOG_USES_UART SETA 1
-" --predefine="NRF51 SETA 1" --predefine="SOFTDEVICE_PRESENT SETA 1" --predefin
-e="SWI_DISABLE0 SETA 1" --list=.\_build\arm_startup_nrf51.lst RTE\Device\nRF514
-22_xxAC\arm_startup_nrf51.s
+cketLab2\pca10028\s130\arm5_no_packs\RTE -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\
+CMSIS\Include -IC:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.
+5.0\Device\Include -IC:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPa
+ck\8.6.0\Device\Include --predefine="__EVAL SETA 1" --predefine="__MICROLIB SET
+A 1" --predefine="__UVISION_VERSION SETA 518" --predefine="_RTE_ SETA 1" --pred
+efine="NRF51 SETA 1" --predefine="BLE_STACK_SUPPORT_REQD SETA 1" --predefine="B
+OARD_PCA10028 SETA 1" --predefine="S130 SETA 1" --predefine="NRF_LOG_USES_UART 
+SETA 1" --predefine="NRF51 SETA 1" --predefine="SOFTDEVICE_PRESENT SETA 1" --pr
+edefine="SWI_DISABLE0 SETA 1" --list=.\_build\arm_startup_nrf51.lst RTE\Device\
+nRF51422_xxAC\arm_startup_nrf51.s
 
 
 
