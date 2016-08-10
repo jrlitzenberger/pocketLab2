@@ -1,0 +1,155 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.18a
+Copyright (C) 2016 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: John Litzenberger, JL Engineering, LLC., LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.18a
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 1 (build 61)
+Assembler:       Armasm.exe V5.06 update 1 (build 61)
+Linker/Locator:  ArmLink.exe V5.06 update 1 (build 61)
+Library Manager: ArmAr.exe V5.06 update 1 (build 61)
+Hex Converter:   FromElf.exe V5.06 update 1 (build 61)
+CPU DLL:         
+Dialog DLL:      
+Target DLL:      Segger\JL2CM3.dll V2.99.19.0
+Dialog DLL:      TARMCM1.DLL V1.9.0.0
+ 
+<h2>Project:</h2>
+C:\Users\John-Surface\Documents\nRF51_SDK\nrf51-ble-tutorial-service-master\nrf51-ble-tutorial-service-master\SDK 11.0.0\nrf5-ble-tutorial-service\pca10028\s130\arm5_no_packs\nrf51-ble-tutorial-service.uvprojx
+Project File Date:  05/30/2016
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Rebuild target 'nrf51422_xxac_s130'
+compiling bsp.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\bsp\bsp.c": No such file or directory
+..\..\..\..\..\bsp\bsp.c: 0 warnings, 1 error
+compiling our_service.c...
+..\..\..\our_service.h(40): error:  #5: cannot open source input file "ble.h": No such file or directory
+  #include "ble.h"
+..\..\..\our_service.c: 0 warnings, 1 error
+compiling main.c...
+..\..\..\main.c(31): error:  #5: cannot open source input file "nordic_common.h": No such file or directory
+  #include "nordic_common.h"
+..\..\..\main.c: 0 warnings, 1 error
+compiling bsp_btn_ble.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\bsp\bsp_btn_ble.c": No such file or directory
+..\..\..\..\..\bsp\bsp_btn_ble.c: 0 warnings, 1 error
+compiling ble_advdata.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\ble\common\ble_advdata.c": No such file or directory
+..\..\..\..\..\..\components\ble\common\ble_advdata.c: 0 warnings, 1 error
+compiling ble_advertising.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\ble\ble_advertising\ble_advertising.c": No such file or directory
+..\..\..\..\..\..\components\ble\ble_advertising\ble_advertising.c: 0 warnings, 1 error
+compiling ble_conn_params.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\ble\common\ble_conn_params.c": No such file or directory
+..\..\..\..\..\..\components\ble\common\ble_conn_params.c: 0 warnings, 1 error
+compiling ble_srv_common.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\ble\common\ble_srv_common.c": No such file or directory
+..\..\..\..\..\..\components\ble\common\ble_srv_common.c: 0 warnings, 1 error
+compiling device_manager_peripheral.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\ble\device_manager\device_manager_peripheral.c": No such file or directory
+..\..\..\..\..\..\components\ble\device_manager\device_manager_peripheral.c: 0 warnings, 1 error
+compiling app_uart.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\uart\app_uart.c": No such file or directory
+..\..\..\..\..\..\components\libraries\uart\app_uart.c: 0 warnings, 1 error
+compiling nrf_delay.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\drivers_nrf\delay\nrf_delay.c": No such file or directory
+..\..\..\..\..\..\components\drivers_nrf\delay\nrf_delay.c: 0 warnings, 1 error
+compiling nrf_drv_common.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\drivers_nrf\common\nrf_drv_common.c": No such file or directory
+..\..\..\..\..\..\components\drivers_nrf\common\nrf_drv_common.c: 0 warnings, 1 error
+compiling nrf_drv_gpiote.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\drivers_nrf\gpiote\nrf_drv_gpiote.c": No such file or directory
+..\..\..\..\..\..\components\drivers_nrf\gpiote\nrf_drv_gpiote.c: 0 warnings, 1 error
+compiling nrf_drv_uart.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\drivers_nrf\uart\nrf_drv_uart.c": No such file or directory
+..\..\..\..\..\..\components\drivers_nrf\uart\nrf_drv_uart.c: 0 warnings, 1 error
+compiling pstorage.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\drivers_nrf\pstorage\pstorage.c": No such file or directory
+..\..\..\..\..\..\components\drivers_nrf\pstorage\pstorage.c: 0 warnings, 1 error
+compiling app_error.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\util\app_error.c": No such file or directory
+..\..\..\..\..\..\components\libraries\util\app_error.c: 0 warnings, 1 error
+compiling app_button.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\button\app_button.c": No such file or directory
+..\..\..\..\..\..\components\libraries\button\app_button.c: 0 warnings, 1 error
+compiling app_error_weak.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\util\app_error_weak.c": No such file or directory
+..\..\..\..\..\..\components\libraries\util\app_error_weak.c: 0 warnings, 1 error
+compiling app_timer.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\timer\app_timer.c": No such file or directory
+..\..\..\..\..\..\components\libraries\timer\app_timer.c: 0 warnings, 1 error
+compiling app_trace.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\trace\app_trace.c": No such file or directory
+..\..\..\..\..\..\components\libraries\trace\app_trace.c: 0 warnings, 1 error
+compiling app_util_platform.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\util\app_util_platform.c": No such file or directory
+..\..\..\..\..\..\components\libraries\util\app_util_platform.c: 0 warnings, 1 error
+compiling fstorage.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\fstorage\fstorage.c": No such file or directory
+..\..\..\..\..\..\components\libraries\fstorage\fstorage.c: 0 warnings, 1 error
+compiling nrf_log.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\util\nrf_log.c": No such file or directory
+..\..\..\..\..\..\components\libraries\util\nrf_log.c: 0 warnings, 1 error
+compiling nrf_assert.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\util\nrf_assert.c": No such file or directory
+..\..\..\..\..\..\components\libraries\util\nrf_assert.c: 0 warnings, 1 error
+compiling retarget.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\uart\retarget.c": No such file or directory
+..\..\..\..\..\..\components\libraries\uart\retarget.c: 0 warnings, 1 error
+compiling sensorsim.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\libraries\sensorsim\sensorsim.c": No such file or directory
+..\..\..\..\..\..\components\libraries\sensorsim\sensorsim.c: 0 warnings, 1 error
+compiling softdevice_handler.c...
+"no source": Error:  #5: cannot open source input file "..\..\..\..\..\..\components\softdevice\common\softdevice_handler\softdevice_handler.c": No such file or directory
+..\..\..\..\..\..\components\softdevice\common\softdevice_handler\softdevice_handler.c: 0 warnings, 1 error
+compiling msgs.c...
+..\..\..\SeggerRTT\msgs.c(8): error:  #5: cannot open source input file "ble.h": No such file or directory
+  #include "ble.h"
+..\..\..\SeggerRTT\msgs.c: 0 warnings, 1 error
+compiling SEGGER_RTT.c...
+compiling SEGGER_RTT_printf.c...
+assembling arm_startup_nrf51.s...
+compiling system_nrf51.c...
+".\_build\nrf51422_xxac_s130.axf" - 3 Error(s), 0 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.4.5.0.pack
+                ARM::CMSIS:CORE:4.3.0
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 4.3.0
+
+Package Vendor: NordicSemiconductor
+                http://developer.nordicsemi.com/nRF5_SDK/pieces/nRF_DeviceFamilyPack/NordicSemiconductor.nRF_DeviceFamilyPack.8.5.0.pack
+                NordicSemiconductor::Device:Startup:8.5.0
+                Nordic Semiconductor nRF ARM devices Device Family Pack.
+   * Component: Startup Version: 8.5.0
+
+<h2>Collection of Component include folders:</h2>
+  C:\Users\John-Surface\Documents\nRF51_SDK\nrf51-ble-tutorial-service-master\nrf51-ble-tutorial-service-master\SDK 11.0.0\nrf5-ble-tutorial-service\pca10028\s130\arm5_no_packs\RTE
+  C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include
+  C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include
+  C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.6.0\Device\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:4.3.0
+
+   * Component: NordicSemiconductor::Device:Startup:8.5.0
+      Source file:   Device\Source\system_nrf51.c
+      Source file:   Device\Source\arm\arm_startup_nrf51.s
+      Include file:  Device\Include\system_nrf51.h
+Target not created.
+Build Time Elapsed:  00:00:01
+</pre>
+</body>
+</html>

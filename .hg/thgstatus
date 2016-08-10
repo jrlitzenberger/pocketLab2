@@ -1,0 +1,12 @@
+mcomponents/ble/ble_services/ble_pcs
+mcomponents/libraries/pwm
+mexamples/ble_peripheral/ble_app_hrs/pca10028/s130/arm5_no_packs
+mexamples/ble_peripheral/ble_app_hrs/pca10031/s130/arm5_no_packs
+mexamples/ble_peripheral/ble_app_hrs/pca10031/s130/arm5_no_packs/RTE
+mexamples/ble_peripheral/ble_app_smartModule
+mexamples/ble_peripheral/ble_app_smartModule/config/ble_app_uart_s130_pca10028
+mexamples/ble_peripheral/ble_app_smartModule/pca10028/s130/arm5_no_packs
+mexamples/ble_peripheral/ble_app_smartModule/pca10028/s130/arm5_no_packs/_build
+mexamples/peripheral/adc
+mexamples/peripheral/adc/pca10028/arm5_no_packs
+mexamples/peripheral/adc/pca10028/arm5_no_packs/RTE
