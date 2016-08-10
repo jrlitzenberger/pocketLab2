@@ -59,7 +59,6 @@
 .\_build\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\_build\main.o: ..\..\..\..\..\..\components\libraries\BME280\BME280.h
 .\_build\main.o: ..\..\..\..\..\..\components\libraries\LTR329\LTR329.h
-.\_build\main.o: ..\..\..\..\..\..\components\ble\ble_services\ble_pcs\ble_pcs.h
 .\_build\main.o: ..\..\..\..\..\..\components\ble\ble_services\ble_bas\ble_bas.h
 .\_build\main.o: ..\..\..\..\..\..\components\ble\ble_services\ble_gss\ble_gss.h
 .\_build\main.o: ..\..\..\..\..\..\components\libraries\uart\app_uart.h

@@ -38,7 +38,6 @@
 #include "mpu9250.h"
 #include "BME280.h"
 #include "LTR329.h"
-#include "ble_pcs.h"
 #include "ble_bas.h"
 #include "ble_gss.h"
 #include "app_uart.h"
@@ -54,8 +53,8 @@
 #define CENTRAL_LINK_COUNT              0                                           /**< Number of central links used by the application. When changing this number remember to adjust the RAM settings*/
 #define PERIPHERAL_LINK_COUNT           1                                           /**< Number of peripheral links used by the application. When changing this number remember to adjust the RAM settings*/
 
-#define DEVICE_NAME                     "Smart Module"                               /**< Name of device. Will be included in the advertising data. */
-#define PCS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
+#define DEVICE_NAME                     "Pocket Lab 2"                               /**< Name of device. Will be included in the advertising data. */
+#define GSS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
@@ -65,7 +64,6 @@
 
 #define MAX_PENDING_TRANSACTIONS        6
 
-#define PWM1_INTERVAL	 	 	 	 	 	 	 	 	  APP_TIMER_TICKS(20, APP_TIMER_PRESCALER)
 #define SENSOR_INTERVAL	 	 	 	  	 	 	  APP_TIMER_TICKS(125, APP_TIMER_PRESCALER)
 #define ADC_MIC_INTERVAL	              APP_TIMER_TICKS(10, APP_TIMER_PRESCALER)
 #define STATE_MACHINE_INTERVAL          APP_TIMER_TICKS(100, APP_TIMER_PRESCALER)
@@ -83,27 +81,16 @@
 
 #define DEAD_BEEF                       0xDEADBEEF                                  /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
-#define UART_TX_BUF_SIZE                256                                         /**< UART TX buffer size. */
-#define UART_RX_BUF_SIZE                256                                         /**< UART RX buffer size. */
-
-//#define VREF	 	 	 	 	 	 								3.1  //was 3.22
 #define ADC_RES													255
 #define MAX_ADC	 	 	 	 	 	 	 	 	 	 	 	  3.6
 
-//#define MIN_MIC_THRESHOLD               (VREF/2 - 0.025)
-//#define MAX_MIC_THRESHOLD 	 	 	        (VREF/2 + 0.025)
-
-static ble_pcs_t                        m_pcs;                                      /**< Structure to identify the Nordic UART Service. */
 static ble_bas_t                        m_bas;                                     /**< Structure used to identify the battery service. */
 static ble_gss_t												m_gss;
 
 static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;    /**< Handle of the current connection. */
 
-static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_PCS_SERVICE, PCS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
+static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_GSS_SERVICE, GSS_SERVICE_UUID_TYPE}};  /**< Universally unique service identifier. */
 
-static uint8_t pwmMode = 0;
-static uint16_t pwmCount = 0;
-static bool turn = true;
 static bool enablexyz = true;
 static bool enablebar = true;
 static bool enablelight = true;
@@ -124,16 +111,10 @@ static double m1, m2, b1, b2, max_thres, min_thres, baseline;
 static app_twi_t m_app_twi = APP_TWI_INSTANCE(0); 
 static volatile bool ready_flag;            // A flag indicating PWM status.
 
-
-APP_TIMER_DEF(pwm1_timer_id);
 APP_TIMER_DEF(sensor_timer_id);
 APP_TIMER_DEF(adc_mic_timer_id);
 APP_TIMER_DEF(state_machine_timer_id);
 APP_TIMER_DEF(button_check_timer_id);
-APP_PWM_INSTANCE(PWM1, 1);              //create instance PWM1 with TIMER1
-//APP_PWM_INSTANCE(PWM2, 1);
-//APP_PWM_INSTANCE(PWM3, 1);
- 
 
 void (*state_machine_table[])(void);
 
@@ -264,9 +245,7 @@ void poweroff(void)
 			cnt = 0;
 			nrf_gpio_pin_clear(RED_LED);
 			nrf_gpio_pin_clear(GREEN_LED);
-			nrf_gpio_pin_clear(LM3407_EN);
 			nrf_gpio_pin_clear(ISET2);
-			app_pwm_uninit(&PWM1);
 				// Prepare wakeup buttons.
 			bsp_btn_ble_sleep_mode_prepare();
 			// Go to system-off mode (this function will not return; wakeup will cause a reset).
@@ -444,7 +423,6 @@ static void gss_mic_config_handler(ble_gss_t * p_gss, uint8_t * p_data, uint16_t
 	}
 	if(command[0] == 0xFF)   //calibrate the microphone
 	{
-			pwmMode = 0;
 			baseline =(((double)micInputRead*MAX_ADC) / ADC_RES);  //ADC hexidecimal range (255), VCC (3V);  
 			max_thres = baseline + 0.025;
 			min_thres = baseline - 0.025;
@@ -556,18 +534,7 @@ static void button_check_timer_handler(void * p_context)
 			{				
 				if(buttonpresscount == 1)
 				{				
-					turn = true;
-					pwmCount = 0;
-					if(pwmMode < 4)
-					{
-						nrf_gpio_pin_set(LM3407_EN);
-						pwmMode++;
-					}
-					else
-					{
-						pwmMode = 0;
-					}
-					
+						//future use
 				}
 				if(buttonpresscount == 2)
 				{
@@ -583,79 +550,6 @@ static void button_check_timer_handler(void * p_context)
 			}
 		}
 	}	
-}
-
-/**@brief Function for handling the data from the PWM Service.
- *
- * @details This function will process the data received from the Nordic UART BLE Service and send
- *          it to the UART module.
- *
- * @param[in] p_nus    Nordic UART Service structure.
- * @param[in] p_data   Data to be send to UART module.
- * @param[in] length   Length of the data.
- */
-/**@snippet [Handling the data received over BLE] */
-static void pcs_pwm1_handler(ble_pcs_t * p_pcs, uint8_t * p_data, uint16_t length)
-{
-	static unsigned char command[20];
-	static int test = 0;
-	memset(command, 0, sizeof(command));
-	for (uint32_t i = 0; i < length; i++)
-	{
-		command[i] = p_data[i];
-	}
-	switch(command[0])
-	{
-		case 0x00:  //turn OFF
-			pwmMode = 0;
-		break;
-		
-		case 0x01:  //turn ON
-			nrf_gpio_pin_set(LM3407_EN);
-			pwmCount = 100 - command[1];
-			turn = true;		
-			pwmMode = 1;			
-		break;
-
-		case 0x02:  //music
-			nrf_gpio_pin_set(LM3407_EN);
-			pwmMode = 2;			
-		break;
-		
-		case 0x03:  //dimming
-			nrf_gpio_pin_set(LM3407_EN);
-			pwmCount = 0;
-			turn = true;
-			pwmMode = 3;			
-		break;
-		
-		case 0x04:  //strobe
-			nrf_gpio_pin_set(LM3407_EN);
-		  pwmCount = 0;
-		  turn = true;
-		  pwmMode = 4;
-		break;
-		
-		defualt:
-		break;
-	}
-}
-/**@snippet [Handling the data received over BLE] */
-
-static void pcs_pwm2_handler(ble_pcs_t * p_pcs, uint8_t * p_data, uint16_t length)
-{
-		for (uint32_t i = 0; i < length; i++)
-		{
-			
-		}
-}
-
-static void pcs_pwm3_handler(ble_pcs_t * p_pcs, uint8_t * p_data, uint16_t length)
-{
-		for (uint32_t i = 0; i < length; i++)
-		{
-			
-		}
 }
 
 static void state_machine_timer_handler(void * p_context)
@@ -716,103 +610,12 @@ static void sensor_timer_handler(void * p_context)
 	}
 }
 
-static void pwm1_timer_handler(void * p_context)
-{
-	  if(pwmMode == 0)  //off
-		{
-			pwmCount = 100;
-			nrf_gpio_pin_clear(LM3407_EN);
-		}
-		
-	  if(pwmMode == 1) //on
-		{
-
-		}
-		
-		if(pwmMode == 2)  //music
-		{
-			//compute mic input to PWM percentage
-			micOutputVoltage = (((double)micInputRead*MAX_ADC) / ADC_RES);  //ADC hexidecimal range (255), VCC (3V)
-			
-			if(micOutputVoltage > max_thres)
-			{
-				pwmCount = (uint16_t)((m1*micOutputVoltage) + b1);
-			}
-			else if((micOutputVoltage > min_thres) && (micOutputVoltage < max_thres))
-			{
-				pwmCount = 85;
-			}
-			else
-			{
-				pwmCount = (uint16_t)((m2*micOutputVoltage) + b2);
-			}
-			/*
-			if(micOutputVoltage > MAX_MIC_THRESHOLD)
-			{
-				//pwmCount = (uint16_t)((74.07*micOutputVoltage) - 122.2);
-				pwmCount = (uint16_t)((-70.17*micOutputVoltage) + 210.52);
-			}
-			else if((micOutputVoltage > MIN_MIC_THRESHOLD)  && (micOutputVoltage < MAX_MIC_THRESHOLD))
-			{
-				pwmCount = 75;
-			}
-			else
-			{
-				//pwmCount = (uint16_t)((-64.51*micOutputVoltage) + 100);
-				pwmCount = (uint16_t)(65.56*micOutputVoltage);
-			}			
-			*/			
-		}
-		
-		if(pwmMode == 3)  //dimming
-		{
-			if(turn)
-			{
-				pwmCount++;
-				if(pwmCount == 100)
-				{
-					turn = false;
-				}
-			}
-			if(!turn)
-			{
-				pwmCount--;
-				if(pwmCount == 0)
-				{
-					turn = true;
-				}
-			}
-		}
-		
-		if(pwmMode == 4)  //strobe
-		{
-			if(turn)
-			{
-				pwmCount += 50;
-				if(pwmCount == 100)
-				{
-					turn = false;
-				}
-			}
-			if(!turn)
-			{
-				pwmCount -= 50;
-				if(pwmCount == 0)
-				{
-					turn = true;
-				}
-			}	
-		}	
-  while (app_pwm_channel_duty_set(&PWM1, 0, pwmCount) == NRF_ERROR_BUSY);		
-}
-
 
 /**@brief Function for initializing services that will be used by the application.
  */
 static void services_init(void)
 {
     uint32_t       err_code;
-    ble_pcs_init_t pcs_init;
 	  ble_bas_init_t bas_init;
 	  ble_gss_init_t gss_init;
 	
@@ -825,16 +628,7 @@ static void services_init(void)
 	 	ble_gss_init(&m_gss, &gss_init);
     APP_ERROR_CHECK(err_code);  
 	
-    memset(&pcs_init, 0, sizeof(pcs_init));
-
-    pcs_init.pwm1_handler = pcs_pwm1_handler;
-	  pcs_init.pwm2_handler = pcs_pwm2_handler;
-	  pcs_init.pwm3_handler = pcs_pwm3_handler;
-    
-    err_code = ble_pcs_init(&m_pcs, &pcs_init);
-    APP_ERROR_CHECK(err_code);
 	
-
     // Initialize Battery Service.
     memset(&bas_init, 0, sizeof(bas_init));
 
@@ -1005,7 +799,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
     ble_conn_params_on_ble_evt(p_ble_evt);
-    ble_pcs_on_ble_evt(&m_pcs, p_ble_evt);
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);	
 	  ble_gss_on_ble_evt(&m_gss, p_ble_evt);
     on_ble_evt(p_ble_evt);
@@ -1081,65 +874,11 @@ void bsp_event_handler(bsp_event_t event)
 }
 
 
-/**@brief   Function for handling app_uart events.
- *
- * @details This function will receive a single character from the app_uart module and append it to 
- *          a string. The string will be be sent over BLE when the last character received was a 
- *          'new line' i.e '\n' (hex 0x0D) or if the string has reached a length of 
- *          @ref NUS_MAX_DATA_LENGTH.
- */
-/**@snippet [Handling the data received over UART] */
-void uart_event_handle(app_uart_evt_t * p_event)
-{
-    static uint8_t data_array[BLE_PCS_MAX_DATA_LEN];
-    static uint8_t index = 0;
-    uint32_t       err_code;
-
-    switch (p_event->evt_type)
-    {
-        case APP_UART_DATA_READY:
-            UNUSED_VARIABLE(app_uart_get(&data_array[index]));
-            index++;
-
-            if ((data_array[index - 1] == '\n') || (index >= (BLE_PCS_MAX_DATA_LEN)))
-            {
-                //err_code = ble_pcs_string_send(&m_pcs, data_array, index);
-                err_code = 0;
-								if (err_code != NRF_ERROR_INVALID_STATE)
-                {
-                    APP_ERROR_CHECK(err_code);
-                }
-                
-                index = 0;
-            }
-            break;
-
-        case APP_UART_COMMUNICATION_ERROR:
-            APP_ERROR_HANDLER(p_event->data.error_communication);
-            break;
-
-        case APP_UART_FIFO_ERROR:
-            APP_ERROR_HANDLER(p_event->data.error_code);
-            break;
-
-        default:
-            break;
-    }
-}
-/**@snippet [Handling the data received over UART] */
-
-
 static void timers_init(void)
 {
 		uint32_t 				err_code;
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);	
-	
-		err_code = app_timer_create(&pwm1_timer_id,
-															  APP_TIMER_MODE_REPEATED,
-															  pwm1_timer_handler);
-	
-		APP_ERROR_CHECK(err_code);
-	
+		
 		err_code = app_timer_create(&sensor_timer_id,
 															  APP_TIMER_MODE_REPEATED,
 														    sensor_timer_handler);
@@ -1161,33 +900,6 @@ static void timers_init(void)
 																APP_TIMER_MODE_REPEATED,
 																button_check_timer_handler);
 }
-
-/**@brief  Function for initializing the UART module.
- */
-/**@snippet [UART Initialization] */
-static void uart_init(void)
-{
-    uint32_t                     err_code;
-    const app_uart_comm_params_t comm_params =
-    {
-        RX_PIN_NUMBER,
-        TX_PIN_NUMBER,
-        RTS_PIN_NUMBER,
-        CTS_PIN_NUMBER,
-        APP_UART_FLOW_CONTROL_DISABLED,
-        false,
-        UART_BAUDRATE_BAUDRATE_Baud115200
-    };
-
-    APP_UART_FIFO_INIT( &comm_params,
-                       UART_RX_BUF_SIZE,
-                       UART_TX_BUF_SIZE,
-                       uart_event_handle,
-                       APP_IRQ_PRIORITY_LOW,
-                       err_code);
-    APP_ERROR_CHECK(err_code);
-}
-/**@snippet [UART Initialization] */
 
 
 /**@brief Function for initializing the Advertising functionality.
@@ -1237,44 +949,8 @@ static void button_init(bool * p_erase_bonds)
     *p_erase_bonds = (startup_event == BSP_EVENT_CLEAR_BONDING_DATA);
 }
 
-
-static void pwm_init(void)
-{
-	  uint32_t err_code;
-	    /* 1-channel PWM, 200Hz, output on DK LED pins. */
-    app_pwm_config_t pwm1_cfg = APP_PWM_DEFAULT_CONFIG_1CH(5000L, PWM1_OUT);
-    
-    /* Switch the polarity of the second channel. */
-    //pwm1_cfg.pin_polarity[1] = APP_PWM_POLARITY_ACTIVE_HIGH;
-    
-    /* Initialize and enable PWM. */
-    err_code = app_pwm_init(&PWM1,&pwm1_cfg,pwm_ready_callback);
-	
-	  //app_pwm_config_t pwm2_cfg = APP_PWM_DEFAULT_CONFIG_1CH(5000L, 11);
-	
-	  //err_code = app_pwm_init(&PWM2, &pwm2_cfg, NULL);
-	
-	  //app_pwm_config_t pwm3_cfg = APP_PWM_DEFAULT_CONFIG_1CH(5000L, 12);
-	
-		//err_code = app_pwm_init(&PWM3, &pwm3_cfg, NULL);
-	
-    APP_ERROR_CHECK(err_code);
-    app_pwm_enable(&PWM1);
-	  //app_pwm_enable(&PWM2);
-		//app_pwm_enable(&PWM3);
-}
-
 static void gpio_init(void)
-{
-		nrf_gpio_cfg(LM3407_EN, 
-								 NRF_GPIO_PIN_DIR_OUTPUT, 
-								 NRF_GPIO_PIN_INPUT_DISCONNECT, 
-							   NRF_GPIO_PIN_NOPULL, 
-								 NRF_GPIO_PIN_S0S1, 
-								 NRF_GPIO_PIN_NOSENSE);
-
-		nrf_gpio_pin_set(LM3407_EN);
-	
+{	
 		nrf_gpio_cfg(GREEN_LED, 
 								 NRF_GPIO_PIN_DIR_OUTPUT, 
 								 NRF_GPIO_PIN_INPUT_DISCONNECT, 
@@ -1335,12 +1011,10 @@ static void bme280_cal_init(void)
 	
 	APP_ERROR_CHECK(app_twi_schedule(&m_app_twi, &transaction));
 }
+
 static void application_timers_start(void)
 {
 		uint32_t err_code;
-	
-		err_code = app_timer_start(pwm1_timer_id, PWM1_INTERVAL, NULL);
-	  APP_ERROR_CHECK(err_code);
 	
 	  err_code = app_timer_start(sensor_timer_id, SENSOR_INTERVAL, NULL);
 	  APP_ERROR_CHECK(err_code);
@@ -1427,7 +1101,6 @@ int main(void)
 		memset(bme280calH, 0, sizeof(bme280calH));	
 
     // Initialize.
-    uart_init();
     twi_config();
 	  adc_init();
 	  //initialize sensors
@@ -1444,7 +1117,6 @@ int main(void)
 	  timers_init();
 	  //button_init(&erase_bonds);	
 	  gpio_init();
-	  pwm_init();
     ble_stack_init();
     gap_params_init();
     services_init();

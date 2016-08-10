@@ -6,7 +6,6 @@
 ".\_build\ble_advertising.o"
 ".\_build\ble_conn_params.o"
 ".\_build\ble_srv_common.o"
-".\_build\ble_pcs.o"
 ".\_build\ble_bas.o"
 ".\_build\ble_gss.o"
 ".\_build\app_uart_fifo.o"
